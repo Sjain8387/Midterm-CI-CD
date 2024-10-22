@@ -1,59 +1,28 @@
-name: Java CI Pipeline
-
-# Run the workflow when code is pushed or a pull request is opened
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-push-docker-image:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the code from the repository
-      - name: Checkout code
-        uses: actions/checkout@v2
+    # Step 1: Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      # Step 2: Set up Java environment
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin' # Set the Java distribution (e.g., temurin)
-          java-version: '11'
+    # Step 2: Log in to Azure Container Registry
+    - name: Log in to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: midtermcicd.azurecr.io
+        username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME }}
+        password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD }}
 
-      # Step 3: Compile the Java program
-      - name: Build Java Program
-        run: javac Main.java
+    # Step 3: Build the Docker image
+    - name: Build Docker image
+      run: docker build -t midtermcicd.azurecr.io/midterm:latest .
 
-      # Step 4: Run the compiled Java program
-      - name: Run Java Program
-        run: java Main
-
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin' # Set the Java distribution
-          java-version: '11'
-
-      # Run basic test (optional - you can add a test framework like JUnit if needed)
-      - name: Run Test
-        run: |
-          echo "Running Main.java"
-          javac Main.java
-          result=$(java Main)
-          if [ "$result" != "Hello, World!" ]; then
-            echo "Test failed: Expected 'Hello, World!', but got '$result'"
-            exit 1
-          fi
+    # Step 4: Push the Docker image to Azure Container Registry
+    - name: Push Docker image
+      run: docker push midtermcicd.azurecr.io/midterm:latest 
