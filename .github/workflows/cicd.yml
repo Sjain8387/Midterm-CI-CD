@@ -27,11 +27,11 @@ jobs:
 
       # Step 3: Compile the Java program
       - name: Build Java Program
-        run: javac HelloWorld.java
+        run: javac Main.java
 
       # Step 4: Run the compiled Java program
       - name: Run Java Program
-        run: java HelloWorld
+        run: java Main
 
   test:
     runs-on: ubuntu-latest
@@ -50,8 +50,8 @@ jobs:
       # Run basic test (optional - you can add a test framework like JUnit if needed)
       - name: Run Test
         run: |
-          echo "Running HelloWorld.java"
-          result=$(java HelloWorld)
+          echo "Running Main.java"
+          result=$(java Main)
           if [ "$result" != "Hello, World!" ]; then
             echo "Test failed: Expected 'Hello, World!', but got '$result'"
             exit 1
