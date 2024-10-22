@@ -51,6 +51,7 @@ jobs:
       - name: Run Test
         run: |
           echo "Running Main.java"
+          javac Main.java
           result=$(java Main)
           if [ "$result" != "Hello, World!" ]; then
             echo "Test failed: Expected 'Hello, World!', but got '$result'"
