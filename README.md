@@ -1,1 +1,1 @@
-# Midterm-CI-CD assignmnet repo
+# Midterm-CI-CD assignment repo
